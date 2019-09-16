@@ -25,9 +25,7 @@ namespace vega.Controllers
         {
             try
             {
-                // return await context.Makes.ToListAsync();
-
-                var makes = await context.Makes.ToListAsync();
+                var makes = await context.Makes.Include(m => m.Models).ToListAsync();
                 return mapper.Map<List<Make>, List<MakeResource>>(makes);
             }
             catch (System.Exception)

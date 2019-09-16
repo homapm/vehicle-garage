@@ -8,9 +8,6 @@ export class MakeService {
 
   getMakes() {
     let makes = this.http.get("/api/makes").map(res => res.json());
-
-    console.log("makes in service :", makes);
-
     return makes;
   }
 }
