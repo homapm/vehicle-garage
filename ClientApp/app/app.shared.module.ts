@@ -1,9 +1,11 @@
-import { MakeService } from "./services/make.service";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { RouterModule } from "@angular/router";
+
+import { FeatureService } from "./services/feature.service";
+import { MakeService } from "./services/make.service";
 
 import { AppComponent } from "./components/app/app.component";
 import { NavMenuComponent } from "./components/navmenu/navmenu.component";
@@ -35,6 +37,6 @@ import { ProviderAst } from "@angular/compiler";
       { path: "**", redirectTo: "home" }
     ])
   ],
-  providers: [MakeService]
+  providers: [MakeService, FeatureService]
 })
 export class AppModuleShared {}
