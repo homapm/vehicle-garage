@@ -27,7 +27,7 @@ namespace vega.Controllers
             await context.SaveChangesAsync();
 
             var result = mapper.Map<Vehicle, VehicleResource>(vehicle);
-            return Ok(result);
+            return Ok(vehicleResource);
         }
     }
 }
