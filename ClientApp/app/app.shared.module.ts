@@ -4,8 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { RouterModule } from "@angular/router";
 
-import { FeatureService } from "./services/feature.service";
-import { MakeService } from "./services/make.service";
+import { VehicleService } from "./services/vehicle.service";
 
 import { AppComponent } from "./components/app/app.component";
 import { NavMenuComponent } from "./components/navmenu/navmenu.component";
@@ -37,6 +36,6 @@ import { ProviderAst } from "@angular/compiler";
       { path: "**", redirectTo: "home" }
     ])
   ],
-  providers: [MakeService, FeatureService]
+  providers: [VehicleService]
 })
 export class AppModuleShared {}
