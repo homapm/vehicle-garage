@@ -14,6 +14,12 @@ namespace vega.Persistence
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<VehicleFeature>().HasKey(vf =>
+            new { vf.FeatureId, vf.VehicleId });
+        }
+
 
 
     }
