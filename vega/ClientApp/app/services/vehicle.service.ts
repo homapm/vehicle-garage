@@ -16,4 +16,8 @@ export class VehicleService {
     console.log("features :", features);
     return features;
   }
+
+  create(vehicle: any) {
+    return this.http.post("/api/vehicles", vehicle).map(res => res.json());
+  }
 }

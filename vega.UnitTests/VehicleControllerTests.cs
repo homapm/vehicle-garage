@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using vega.Controllers;
-using vega.Models;
+using vega.Core.Models;
 using vega.Persistence;
 
 namespace vega.UnitTests
