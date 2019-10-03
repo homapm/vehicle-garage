@@ -1,6 +1,6 @@
 using AutoMapper;
 using vega.Controllers.Resources;
-using vega.Models;
+using vega.Core.Models;
 using System.Linq;
 using vega.Resources;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace vega.Mapping
                     .MapFrom(v => new ContactResource
                     { Name = v.ContactName, Email = v.ContactEmail, Phone = v.ContactPhone }))
                 .ForMember(vr => vr.Features, opt => opt
-                    .MapFrom(v => v.Features.Select(vf => new KeyValuePairResource { Id = vf.Id, Name = vf.Feature.Name })))
+                    .MapFrom(v => v.Features.Select(vf => new KeyValuePairResource { Id = vf.Feature.Id, Name = vf.Feature.Name })))
                 .ForMember(vr => vr.Make, opt => opt
                    .MapFrom(v => v.Model.Make));
 
@@ -44,13 +44,13 @@ namespace vega.Mapping
                 .AfterMap((vr, v) =>
                 {
                     // Remove unselected features
-                    var removedFeatures = v.Features.Where(f => !vr.Features.Contains(f.FeatureId));
+                    var removedFeatures = v.Features.Where(f => !vr.Features.Contains(f.FeatureId)).ToList();
                     foreach (var f in removedFeatures)
                         v.Features.Remove(f);
 
                     // Add new features
-                    var newfeatures = vr.Features.Where(id => !v.Features.Any(vf => vf.FeatureId == id)).Select(id => new VehicleFeature { FeatureId = id });
-                    foreach (var f in newfeatures)
+                    var addedfeatures = vr.Features.Where(id => !v.Features.Any(vf => vf.FeatureId == id)).Select(id => new VehicleFeature { FeatureId = id });
+                    foreach (var f in addedfeatures)
                         v.Features.Add(f);
                 });
 

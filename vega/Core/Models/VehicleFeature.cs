@@ -5,7 +5,7 @@ namespace vega.Core.Models
     [Table("VehicleFeatures")]
     public class VehicleFeature
     {
-        public int Id { get; set; }
+        // public int Id { get; set; }
 
         public int VehicleId { get; set; }
 
