@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "84dcd5072e5cffbcb4fb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "beb9a081982c51b483e9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -870,6 +870,9 @@ var VehicleService = (function () {
         var features = this.http.get("/api/features").map(function (res) { return res.json(); });
         console.log("features :", features);
         return features;
+    };
+    VehicleService.prototype.create = function (vehicle) {
+        return this.http.post("/api/vehicles", vehicle).map(function (res) { return res.json(); });
     };
     VehicleService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
@@ -1846,11 +1849,15 @@ var VehicleFormComponent = (function () {
         this.makes = [];
         this.features = [];
         this.models = [];
-        this.vehicle = {};
+        this.vehicle = {
+            features: [],
+            contact: {}
+        };
     }
     VehicleFormComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.vehicleService.getMakes().subscribe(function (makes) {
+            console.log("makes :", makes);
             _this.makes = makes;
         });
         this.vehicleService.getFeatures().subscribe(function (features) {
@@ -1859,8 +1866,26 @@ var VehicleFormComponent = (function () {
     };
     VehicleFormComponent.prototype.onMakeChange = function () {
         var _this = this;
-        var selectedMake = this.makes.find(function (m) { return m.id == _this.vehicle.make; });
+        var selectedMake = this.makes.find(function (m) { return m.id == _this.vehicle.makeId; });
         this.models = selectedMake.models ? selectedMake.models : [];
+        // this.models = selectedMake ? selectedMake.models : [];
+        delete this.vehicle.modelId;
+    };
+    VehicleFormComponent.prototype.onFeatureToggle = function (featureId, $event) {
+        console.log("featureId :", featureId);
+        if ($event.target.checked) {
+            this.vehicle.features.push(featureId);
+            console.log("featureId added:", featureId);
+        }
+        else {
+            var index = this.vehicle.features.indexOf(featureId);
+            this.vehicle.features.splice(index, 1);
+        }
+    };
+    VehicleFormComponent.prototype.submit = function () {
+        this.vehicleService
+            .create(this.vehicle)
+            .subscribe(function (vehicle) { return console.log("vehicle :", vehicle); });
     };
     VehicleFormComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -2277,7 +2302,7 @@ module.exports = "<div class=\"main-nav\">\r\n  <div class=\"navbar navbar-inver
 /* 30 */
 /***/ (function(module, exports) {
 
-module.exports = "<form>\r\n  <h2>New Vehicle</h2>\r\n  <div class=\"form-group\">\r\n    <label for=\"make\">Make</label>\r\n    <select\r\n      id=\"make\"\r\n      class=\"form-control\"\r\n      (change)=\"onMakeChange()\"\r\n      [(ngModel)]=\"vehicle.make\"\r\n      name=\"make\"\r\n    >\r\n      <option value=\"\">Select Option</option>\r\n      <option *ngFor=\"let item of makes\" value=\"{{ item.id }}\">{{\r\n        item.name\r\n      }}</option>\r\n    </select>\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"model\">Model</label>\r\n    <select id=\"model\" class=\"form-control\">\r\n      <option value=\"\">Select Option</option>\r\n      <option *ngFor=\"let m of models\" value=\"{{ m.id }}\">{{ m.name }}</option>\r\n    </select>\r\n  </div>\r\n  <h2>Features</h2>\r\n  <div *ngFor=\"let f of features\" class=\"checkbox\">\r\n    <label for=\"feature{{ f.id }}\">\r\n      <input type=\"checkbox\" id=\"feature{{ f.id }}\" /> {{ f.name }}\r\n    </label>\r\n  </div>\r\n  <h2>Contact</h2>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactName\">Name</label>\r\n    <input id=\"contactName\" type=\"text\" class=\"form-control\" />\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactPhone\">Phone</label>\r\n    <input id=\"contactPhone\" type=\"text\" class=\"form-control\" />\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactEmail\">Email</label>\r\n    <input id=\"contactEmail\" type=\"text\" class=\"form-control\" />\r\n  </div>\r\n  <button class=\"btn btn-primary\">Save</button>\r\n</form>\r\n";
+module.exports = "<form (ngSubmit)=\"submit()\">\r\n  <h2>New Vehicle</h2>\r\n  <p>\r\n    {{ vehicle | json }}\r\n  </p>\r\n  <div class=\"form-group\">\r\n    <label for=\"make\">Make</label>\r\n    <select\r\n      id=\"make\"\r\n      class=\"form-control\"\r\n      (change)=\"onMakeChange()\"\r\n      [(ngModel)]=\"vehicle.makeId\"\r\n      name=\"makeId\"\r\n    >\r\n      <option value=\"\">Select Option</option>\r\n      <option *ngFor=\"let item of makes\" value=\"{{ item.id }}\">{{\r\n        item.name\r\n      }}</option>\r\n    </select>\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"model\">Model</label>\r\n    <select\r\n      id=\"model\"\r\n      class=\"form-control\"\r\n      [(ngModel)]=\"vehicle.modelId\"\r\n      name=\"modelId\"\r\n    >\r\n      <option value=\"\">Select Option</option>\r\n      <option *ngFor=\"let m of models\" value=\"{{ m.id }}\">{{ m.name }}</option>\r\n    </select>\r\n  </div>\r\n  <p>Is registered?</p>\r\n  <label for=\"registered\" class=\"radio-inline\">\r\n    <input\r\n      type=\"radio\"\r\n      name=\"isRegistered\"\r\n      id=\"registered\"\r\n      value=\"true\"\r\n      [(ngModel)]=\"vehicle.isRegistered\"\r\n    />\r\n    Yes\r\n  </label>\r\n  <label for=\"registered\" class=\"radio-inline\">\r\n    <input\r\n      type=\"radio\"\r\n      name=\"isRegistered\"\r\n      id=\"notRegistered\"\r\n      value=\"false\"\r\n      [(ngModel)]=\"vehicle.isRegistered\"\r\n    />\r\n    No\r\n  </label>\r\n\r\n  <h2>Features</h2>\r\n  <div *ngFor=\"let f of features\" class=\"checkbox\">\r\n    <label for=\"feature{{ f.id }}\">\r\n      <input\r\n        type=\"checkbox\"\r\n        id=\"feature{{ f.id }}\"\r\n        (change)=\"onFeatureToggle(f.id, $event)\"\r\n      />\r\n      {{ f.name }}\r\n    </label>\r\n  </div>\r\n  <h2>Contact</h2>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactName\">Name</label>\r\n    <input\r\n      id=\"contactName\"\r\n      type=\"text\"\r\n      class=\"form-control\"\r\n      [(ngModel)]=\"vehicle.contact.name\"\r\n      name=\"contactName\"\r\n    />\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactPhone\">Phone</label>\r\n    <input\r\n      id=\"contactPhone\"\r\n      type=\"text\"\r\n      class=\"form-control\"\r\n      [(ngModel)]=\"vehicle.contact.phone\"\r\n      name=\"contactPhone\"\r\n    />\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"contactEmail\">Email</label>\r\n    <input\r\n      id=\"contactEmail\"\r\n      type=\"text\"\r\n      class=\"form-control\"\r\n      [(ngModel)]=\"vehicle.contact.email\"\r\n      name=\"contactEmail\"\r\n    />\r\n  </div>\r\n  <button class=\"btn btn-primary\">Save</button>\r\n</form>\r\n";
 
 /***/ }),
 /* 31 */
