@@ -25,7 +25,7 @@ namespace vega.UnitTests
             mockContext = new Mock<VegaDbContext>();
             mockContext.Setup(v => v.Vehicles).Returns(mockSet.Object);
 
-            vehiclesController = new VehiclesController(mapper.Object, mockContext.Object);
+            // vehiclesController = new VehiclesController(mapper.Object, mockContext.Object);
         }
 
         // [Test]
